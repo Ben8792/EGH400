@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 input_loc = "../data/inputs/"
 output_loc = "../data/outputs/"
@@ -36,7 +37,7 @@ def summarise(input_df: pd.DataFrame) -> list[pd.DataFrame, pd.DataFrame]:
             "index": "row_id"
         })
     )
-    print(input_df.columns)
+    
     # Ask pandas to interpret as datetime instead of string
     input_df.date = pd.to_datetime(input_df.date, dayfirst=False)
 
@@ -98,6 +99,81 @@ def summarise(input_df: pd.DataFrame) -> list[pd.DataFrame, pd.DataFrame]:
     return input_df, overall
 
 
+def add_exp_decay(input_data):
+    input_data = input_data.reset_index(drop=True)
+   
+    scoring_plays = input_data.loc[input_data.Score > 0]
+
+    games = input_data.game_id.drop_duplicates().to_list()
+    
+    
+    input_data["outcome_score"] = 0
+    input_data["related_score"] = ""
+    input_data["team_scored"] = ""
+
+
+    for game in games:
+       
+        this_game = input_data.loc[input_data.game_id == game]
+       
+        game_sum = input_data.Score.sum()
+       
+        if game_sum == 0:
+            input_data[this_game.index,"related_score"] = "No_score"
+        else:
+            scoring_plays = this_game.loc[this_game.Score > 0]
+
+            for play in scoring_plays.index:
+                if play == scoring_plays.index.min():
+                    input_data.loc[(input_data.game_id == game) & (input_data.index <= play),"related_score"] = play
+                else:
+                    input_data.loc[
+                        (input_data.game_id == game) &
+                        (input_data.index <= play) &
+                        (input_data.index > prev_play), "related_score"
+                    ] = play
+
+                prev_play = play
+
+    scoring_list = input_data.related_score.drop_duplicates().to_list()
+
+    
+    for play in scoring_list:
+        if play == "":
+            continue
+        
+        events = input_data.loc[input_data.related_score == play]
+
+        length = len(events)
+        
+        A_coef = input_data.loc[play, "Score"]
+        team_scored = input_data.loc[play, "teamAttack"]
+        
+        B_coef = 0.5
+        
+
+        add_df = pd.DataFrame({"position":[*range(length)]})
+        add_df["outcome_score"] = A_coef*np.exp((-1)*B_coef*add_df.position)
+
+        add_df = add_df.iloc[::-1]
+
+        input_data.loc[input_data.related_score == play, "outcome_score"] = add_df.outcome_score.to_list()
+        input_data.loc[input_data.related_score == play, "team_scored"] = team_scored
+    
+    input_data.loc[
+        input_data.teamDefense == input_data.team_scored,
+        "outcome_score"
+    ] = -1 * (input_data.
+        loc[
+            input_data.teamDefense == input_data.team_scored,
+            "outcome_score"
+        ]
+    )
+            
+    
+    return input_data
+
+
 def main():
 
     # Read input
@@ -105,6 +181,8 @@ def main():
 
     # Create summary
     output_df, summary = summarise(input_df)
+
+    output_df = add_exp_decay(output_df)
 
     # Export
     summary.to_csv(output_loc + "basic_summary.csv", index=False)
