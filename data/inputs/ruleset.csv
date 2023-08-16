@@ -1,0 +1,8 @@
+play,filter
+Penalty Goal Attempt,"(df.Origin == ""Penalty"") & (df.nextOrigin == ""Restart"")"
+Kick for Touch,"(df.Origin == ""Penalty"") & (df.Clear == 1)"
+Choose to Scrum,"(df.Origin == ""Penalty"") & (df.nextOrigin == ""Scrum"") & (df.Pass == 0) & (df.Ruck == 0) & (df.Clear == 0)"
+Kick for Position,"(df.Origin == ""Scrum"") & (df.Ruck == 0) & (df.Clear == 1) & (df.nextOrigin == ""Kick Fielded"")"
+Kick for Touch,"(df.Origin == ""Scrum"") & (df.Ruck == 0) & (df.Clear == 1) & ((df.nextOrigin == ""Lineout"") | (df.nextOrigin == ""Lineout""))"
+Pick and Go,(df.Ruck > 0) & (df.Pass > 0) & (df.passRuckRatio <= 2)
+Passing Play,(df.Ruck > 0) & (df.Pass > 0) & (df.passRuckRatio > 2)

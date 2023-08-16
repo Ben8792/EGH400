@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+from sklearn.linear_model import LinearRegression
+from regression import get_osws, get_mean_stats
 
 input_loc = "../data/inputs/"
 output_loc = "../data/outputs/"
@@ -174,6 +176,36 @@ def add_exp_decay(input_data):
     return input_data
 
 
+def attach_play_type(input_df):
+
+    input_df["passRuckRatio"] = input_df.Pass / input_df.Ruck
+    input_df["nextOrigin"] = input_df.Origin.shift(1)
+    input_df["play"] = ""
+    
+    
+    ruleset = pd.read_csv("../data/inputs/ruleset.csv")
+
+    play_list = ruleset.play.drop_duplicates().to_list()
+
+    for i in ruleset.index:
+        this_play = ruleset.loc[i,"play"]
+        filter_string = ruleset.loc[i, "filter"]
+        execute_line = "df.loc[" + filter_string + ", \"play\"] = this_play"
+        
+        execute_line = execute_line.replace("df", "input_df")
+
+        exec(execute_line)
+
+    return input_df
+
+
+# def get_osws(input_df):
+
+
+
+    # return osw_df
+
+
 def main():
 
     # Read input
@@ -182,7 +214,31 @@ def main():
     # Create summary
     output_df, summary = summarise(input_df)
 
+    # Attach play type
     output_df = add_exp_decay(output_df)
+    output_df = attach_play_type(output_df)
+
+    x_set = ["Start", "Pass", "Ruck", "Clear", "Contest", "Score", "Retain NEG",
+        "Retain Static", "Retain Gain 1", "Retain Gain +1", "Retain Score",
+        "Retain HR neg", "Retain HR Static", "Retain HR Gain 1", "Retain HR Gain +1",
+        "Lose gain neg", "Lose Static", "Lose Gain 1", "Lose Gain +1", "Lose HR neg",
+        "Lose HR Static", "Lose HR Gain 1", "Lose HR Gain +1"
+    ]
+    y_set = "outcome_score"
+
+    osw_set = get_osws(output_df, x_set, y_set).tolist()
+    print(osw_set)
+
+    mean_set = get_mean_stats(output_df, x_set, "Pick and Go").to_list()
+    print(mean_set)
+
+    cp_df = pd.DataFrame({"weight": osw_set, "value": mean_set})
+
+    cp_df["weighted_value"] = cp_df.weight * cp_df.value
+
+    outcome_score = cp_df.weighted_value.sum()
+
+    print(outcome_score)
 
     # Export
     summary.to_csv(output_loc + "basic_summary.csv", index=False)
