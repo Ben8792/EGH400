@@ -91,6 +91,20 @@ def summarise(input_df: pd.DataFrame) -> list[pd.DataFrame, pd.DataFrame]:
     for col in lose_list:
         input_df["lostPosession"] = input_df["lostPosession"] + input_df[col]
 
+    # Extract zones gained or lost
+    input_df["zonesGained"] = 0
+    col_list = ["Retain NEG", "Retain HR neg", "Lose gain neg", "Lose HR neg"]
+    for col in col_list:
+        input_df.zonesGained = input_df.zonesGained - input_df[col]
+
+    col_list = ["Retain Gain 1", "Retain HR Gain 1", "Lose Gain 1", "Lose HR Gain 1"]
+    for col in col_list:
+        input_df.zonesGained = input_df.zonesGained + input_df[col]
+    
+    col_list = ["Retain Gain +1", "Retain HR Gain +1", "Lose Gain +1", "Lose HR Gain +1"]
+    for col in col_list:
+        input_df.zonesGained = input_df.zonesGained + 2*input_df[col]
+
     # Define list of stats to sum
     stats_to_sum = ["Pass", "Ruck", "Clear", "retainedPosession", "lostPosession", "Score"]
 
@@ -288,10 +302,6 @@ def rank_plays_with_filter(df, filter):
         .reset_index(drop=True)
     )
 
-    # ranked_plays = ranked_plays.drop(columns=[0])
-
-    # print(ranked_plays)
-
     ranked_plays.columns = ranked_plays.loc[0]
     ranked_plays = ranked_plays.drop(0)
     ranked_plays["filter"] = filter
@@ -304,8 +314,6 @@ def rank_plays_with_filter(df, filter):
 
 
 def rank_all_filters(df, plays):
-    
-    
     filter_set = pd.read_csv("../data/inputs/filters.csv")
 
     output_df = pd.DataFrame(columns=plays)
@@ -320,6 +328,7 @@ def rank_all_filters(df, plays):
         output_df_n = pd.concat([output_df_n,this_output_df_n])
 
     output_df = output_df.rename(columns={"":"No Play Set"})
+    output_df_n = output_df_n.rename(columns={"":"No Play Set"})
     
     return output_df, output_df_n
 
@@ -328,25 +337,15 @@ def rank_all_filters(df, plays):
 def main():
 
     filename = "Rugbycology_dataset_v2.csv"
-    x_set = ["Start", "Pass", "Ruck", "Clear", "Contest", "Score", "Retain NEG",
-        "Retain Gain 1", "Retain Gain +1", "Retain Score",
-        "Retain HR neg", "Retain HR Static", "Retain HR Gain 1", "Retain HR Gain +1",
-        "Lose gain neg", "Lose Static", "Lose Gain 1", "Lose Gain +1", "Lose HR neg",
-        "Lose HR Static", "Lose HR Gain 1", "Lose HR Gain +1"
+    x_set = ["Pass", "Ruck", "Clear", "Contest", "Score", "retainedPosession",
+             "lostPosession", "zonesGained", "time",
     ]
     y_set = "outcome_score"
     # "Retain Static", 
 
     output_df, summary, osw_set = pre_process(filename, x_set, y_set)
 
-    # mean_set = get_mean_stats(output_df, x_set, "Pick and Go").to_list()
-    # print(mean_set)
-
-    # cp_df = pd.DataFrame({"weight": osw_set, "value": mean_set})
-
-    # cp_df["weighted_value"] = cp_df.weight * cp_df.value
-
-    # outcome_score = cp_df.weighted_value.sum()
+    print(osw_set)
 
     ruleset = pd.read_csv("../data/inputs/ruleset.csv")
     plays = ruleset.play.drop_duplicates().to_list()
@@ -358,8 +357,6 @@ def main():
     filtered_results, n_values = rank_all_filters(output_df, plays)
     filtered_results = filtered_results.reset_index(drop=True)
     n_values = n_values.reset_index(drop=True)
-
-    # print(n_values)
 
     filtered_results.to_csv(output_loc + "filtered_results.csv", index=False)
     n_values.to_csv(output_loc + "n_values.csv", index=False)

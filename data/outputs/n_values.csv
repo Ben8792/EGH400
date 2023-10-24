@@ -1,4 +1,4 @@
-Penalty Goal Attempt,Kick for Position,Kick for Touch,Pick and Go Short,Passing Play,Pick and Go Long,,filter
+Penalty Goal Attempt,Kick for Position,Kick for Touch,Pick and Go Short,Passing Play,Pick and Go Long,No Play Set,filter
 6,386,505,100,52,9,299,"Zone == ""Own 22"""
 14,518,407,397,229,59,736,"Zone == ""Own 50"""
 159,37,205,383,285,117,406,"Zone == ""Opp 50"""
@@ -47,12 +47,13 @@ Penalty Goal Attempt,Kick for Position,Kick for Touch,Pick and Go Short,Passing 
 11,54,73,53,30,14,96,time_bin == 75.0
 4,24,55,44,31,16,63,time_bin == 80.0
 14,,6,20,12,6,21,time_bin == 85.0
-102,447,483,410,278,102,642,"(Comp == ""6 Nations 2022"") | (Comp == ""6 Nations 2023"")"
-70,178,257,246,113,50,377,"(Comp == ""Winter 2022"")"
-64,177,339,258,122,51,468,"(Comp == ""TRC 2022"")"
-44,126,159,119,91,31,225,"(Comp == ""Autumn 2022"")"
-6,13,29,24,20,2,44,"(Comp == ""Super 2023"")"
-,75,56,371,224,107,605,"(Origin == ""Lineout"")"
-,64,31,96,89,26,290,"(Origin == ""Scrum"")"
-286,22,781,22,6,5,78,"(Origin == ""Penalty"")"
-,453,182,347,146,59,332,"(Origin == ""Kick fielded"")"
+,75,56,371,224,107,605,"Origin == ""Lineout"""
+,64,31,96,89,26,290,"Origin == ""Scrum"""
+286,22,781,22,6,5,78,"Origin == ""Penalty"""
+,453,182,347,146,59,332,"Origin == ""Kick fielded"""
+,155,115,114,38,7,231,"Origin == ""Restart"""
+,140,74,100,116,29,185,"Origin == ""Turnover"""
+,32,28,7,5,3,35,"Origin == ""Free-kick"""
+,5,5,24,29,11,46,"(Zone == ""Opp 50"") & (time_bin >= 5) & (time_bin <= 15) & (Origin == ""Lineout"")"
+17,,22,2,,,3,"(Zone == ""Opp 50"") & (time_bin >= 75) & (Origin == ""Penalty"")"
+,5,6,3,1,1,12,"(Zone == ""Own 22"") & (time_bin >= 60) & (time_bin <= 70) & (Origin == ""Scrum"")"

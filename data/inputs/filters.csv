@@ -1,58 +1,59 @@
-no.,filter
-1,Zone == "Own 22"
-2,Zone == "Own 50"
-3,Zone == "Opp 50"
-4,Zone == "Opp 22"
-5,teamAttack == "AUS"
-6,teamAttack == "ITA"
-7,teamAttack == "SA"
-8,teamAttack == "SCO"
-9,teamAttack == "ENG"
-10,teamAttack == "IRE"
-11,teamAttack == "WAL"
-12,teamAttack == "FRA"
-13,teamAttack == "NZ"
-14,teamAttack == "ARG"
-15,teamAttack == "JAP"
-16,teamAttack == "CANES"
-17,teamAttack == "REDS"
-18,teamDefense == "AUS"
-19,teamDefense == "ITA"
-20,teamDefense == "SA"
-21,teamDefense == "SCO"
-22,teamDefense == "ENG"
-23,teamDefense == "IRE"
-24,teamDefense == "WAL"
-25,teamDefense == "FRA"
-26,teamDefense == "NZ"
-27,teamDefense == "ARG"
-28,teamDefense == "JAP"
-29,teamDefense == "CANES"
-30,teamDefense == "REDS"
-31,time_bin == 0.0
-32,time_bin == 5.0
-33,time_bin == 10.0
-34,time_bin == 15.0
-35,time_bin == 20.0
-36,time_bin == 25.0
-37,time_bin == 30.0
-38,time_bin == 35.0
-39,time_bin == 40.0
-40,time_bin == 45.0
-41,time_bin == 50.0
-42,time_bin == 55.0
-43,time_bin == 60.0
-44,time_bin == 65.0
-45,time_bin == 70.0
-46,time_bin == 75.0
-47,time_bin == 80.0
-48,time_bin == 85.0
-49,(Comp == "6 Nations 2022") | (Comp == "6 Nations 2023")
-50,(Comp == "Winter 2022")
-51,(Comp == "TRC 2022")
-52,(Comp == "Autumn 2022")
-53,(Comp == "Super 2023")
-54,(Origin == "Lineout")
-55,(Origin == "Scrum")
-56,(Origin == "Penalty")
-56,(Origin == "Kick fielded")
+no.,filter,special_scenario
+1,Zone == "Own 22",FALSE
+2,Zone == "Own 50",FALSE
+3,Zone == "Opp 50",FALSE
+4,Zone == "Opp 22",FALSE
+5,teamAttack == "AUS",FALSE
+6,teamAttack == "ITA",FALSE
+7,teamAttack == "SA",FALSE
+8,teamAttack == "SCO",FALSE
+9,teamAttack == "ENG",FALSE
+10,teamAttack == "IRE",FALSE
+11,teamAttack == "WAL",FALSE
+12,teamAttack == "FRA",FALSE
+13,teamAttack == "NZ",FALSE
+14,teamAttack == "ARG",FALSE
+15,teamAttack == "JAP",FALSE
+16,teamAttack == "CANES",FALSE
+17,teamAttack == "REDS",FALSE
+18,teamDefense == "AUS",FALSE
+19,teamDefense == "ITA",FALSE
+20,teamDefense == "SA",FALSE
+21,teamDefense == "SCO",FALSE
+22,teamDefense == "ENG",FALSE
+23,teamDefense == "IRE",FALSE
+24,teamDefense == "WAL",FALSE
+25,teamDefense == "FRA",FALSE
+26,teamDefense == "NZ",FALSE
+27,teamDefense == "ARG",FALSE
+28,teamDefense == "JAP",FALSE
+29,teamDefense == "CANES",FALSE
+30,teamDefense == "REDS",FALSE
+31,time_bin == 0.0,FALSE
+32,time_bin == 5.0,FALSE
+33,time_bin == 10.0,FALSE
+34,time_bin == 15.0,FALSE
+35,time_bin == 20.0,FALSE
+36,time_bin == 25.0,FALSE
+37,time_bin == 30.0,FALSE
+38,time_bin == 35.0,FALSE
+39,time_bin == 40.0,FALSE
+40,time_bin == 45.0,FALSE
+41,time_bin == 50.0,FALSE
+42,time_bin == 55.0,FALSE
+43,time_bin == 60.0,FALSE
+44,time_bin == 65.0,FALSE
+45,time_bin == 70.0,FALSE
+46,time_bin == 75.0,FALSE
+47,time_bin == 80.0,FALSE
+48,time_bin == 85.0,FALSE
+54,Origin == "Lineout",FALSE
+55,Origin == "Scrum",FALSE
+56,Origin == "Penalty",FALSE
+57,Origin == "Kick fielded",FALSE
+58,Origin == "Restart",FALSE
+59,Origin == "Turnover",FALSE
+60,Origin == "Free-kick",FALSE
+61,(Zone == "Opp 50") & (time_bin >= 5) & (time_bin <= 15) & (Origin == "Lineout"),Scenario A
+62,(Zone == "Opp 50") & (time_bin >= 75) & (Origin == "Penalty"),Scenario B
+62,(Zone == "Own 22") & (time_bin >= 60) & (time_bin <= 70) & (Origin == "Scrum"),Scenario C
